@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -12,10 +14,12 @@
   },
   "author": "Group 2",
   "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
   "bugs": {
     "url": "https://github.com/theMagnificentJay/BiblioQuest-Server/issues"
   },
-  "homepage": "https://github.com/theMagnificentJay/BiblioQuest-Server#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
