@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const biblioQuestApp = express();
 const sequelize = require("./db");
@@ -6,7 +7,19 @@ const controllers = require("./controllers/controllerIndex");
 biblioQuestApp.use(express.json());
 biblioQuestApp.use(require("./middleware/headers"));
 
+/**********************
+ * OPEN ROUTES
+ **********************/
 biblioQuestApp.use("/user", controllers.User);
+
+/**********************
+ * AUTHENTICATED ROUTES
+ **********************/
+biblioQuestApp.use(
+  "/list",
+  require("./middleware/validate-session"),
+  controllers.List
+);
 
 sequelize
   .authenticate()
