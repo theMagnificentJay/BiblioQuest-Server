@@ -27,8 +27,7 @@ const BookItemModel = sequelize.define("book", {
     allowNull: false,
   },
   description: {
-    //TODO throws errors for long descriptions
-    type: DataTypes.STRING(1234),
+    type: DataTypes.TEXT, //set to text to accept more characters.
     allowNull: true,
   },
   costRetail: {
@@ -56,11 +55,11 @@ const BookItemModel = sequelize.define("book", {
     allowNull: true,
   },
   smallThumbnailURL: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(2000), // set to longer for long urls
     allowNull: true,
   },
   thumbnailURL: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(2000),
     allowNull: true,
   },
 });
