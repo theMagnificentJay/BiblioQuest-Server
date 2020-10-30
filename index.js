@@ -21,6 +21,12 @@ biblioQuestApp.use(
   controllers.List
 );
 
+biblioQuestApp.use(
+  "/book",
+  require("./middleware/validate-session"),
+  controllers.Book
+);
+
 sequelize
   .authenticate()
   .then(() => {
