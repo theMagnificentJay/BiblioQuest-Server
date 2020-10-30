@@ -12,7 +12,7 @@ bookListController.post("/newList", async (req, res) => {
   const owner = req.user.id;
   const title = req.body.title;
   try {
-    let newList = await BookListModel.create({
+    let newList = BookListModel.create({
       owner: owner,
       title: title,
     });
@@ -24,6 +24,63 @@ bookListController.post("/newList", async (req, res) => {
     {
       res.status(500).json({
         message: "Failed to create list.",
+      });
+    }
+  }
+});
+
+//TBS 10.29.2020: Add Display All list 
+/***********************
+ * DISPLAY ALL LISTS FOR OWNER 
+ ***********************/
+bookListController.get("/allLists", async (req, res) => {
+  const bookListOwner = req.user.id;
+  
+  try {
+    let allLists = await BookListModel.findAll({
+      where:
+        {owner : bookListOwner}
+      }).then(
+        function findAllSuccess(allLists) {
+            res.json(allLists);
+            // TODO handle no lists exist
+        // },
+        // function findAllError(err) {
+        //     res.send(500, err.message);
+        });
+  } catch (err) {
+    {
+      res.status(500).json({
+        message: "Failed to retrieve lists.",
+      });
+    }
+  }
+});
+
+//TBS 10.29.2020: Add Display Single list 
+/***********************
+ * DISPLAY SINGLE LIST FOR OWNER 
+ ***********************/
+bookListController.get("/singleList/:id", async (req, res) => {
+  const listID = req.params.id;
+  const listOwner = req.user.id;
+  
+  try {
+    let singleList = await BookListModel.findOne({
+      where:
+        {id: listID, owner: listOwner}
+    }).then(
+      function findAllSuccess(singleList) {
+          res.json(singleList);
+          // TODO handle no lists exist
+      // },
+      // function findAllError(err) {
+      //     res.send(500, err.message);
+      });
+  } catch (err) {
+    {
+      res.status(500).json({
+        message: "Failed to retrieve list.",
       });
     }
   }

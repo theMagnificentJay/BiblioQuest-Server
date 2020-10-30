@@ -13,13 +13,14 @@ const userController = Router();
 
 userController.post("/register", async (req, res) => {
   let { email, password } = req.body;
+
   try {
     await UserModel.create({
       email: email,
       passwordhash: bcrypt.hashSync(password, 10),
     });
     res.status(201).json({
-      message: "Success: Account created!",
+      message: "Success: Account created!"
     });
   } catch (err) {
     if (err instanceof UniqueConstraintError) {
