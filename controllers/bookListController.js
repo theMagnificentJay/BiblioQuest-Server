@@ -42,11 +42,9 @@ bookListController.get("/allLists", async (req, res) => {
         {owner : bookListOwner}
       }).then(
         function findAllSuccess(allLists) {
-            res.json(allLists);
-            // TODO handle no lists exist
-        // },
-        // function findAllError(err) {
-        //     res.send(500, err.message);
+          if(allList != null){
+            res.json(allList)
+          } else res.status(501).json({message: "No lists were found."});        
         });
   } catch (err) {
     {
