@@ -13,24 +13,30 @@ const userController = Router();
 
 userController.post("/register", async (req, res) => {
   let { email, password } = req.body;
-  try {
-    await UserModel.create({
-      email: email,
-      passwordhash: bcrypt.hashSync(password, 10),
-    });
-    res.status(201).json({
-      message: "Success: Account created!",
-    });
-  } catch (err) {
-    if (err instanceof UniqueConstraintError) {
-      res.status(409).json({
-        message: "Account with that email already taken.",
+  if (password.length >= 5) {
+    try {
+      await UserModel.create({
+        email: email,
+        passwordhash: bcrypt.hashSync(password, 10),
       });
-    } else {
-      res.status(500).json({
-        message: "Registration failed",
+      res.status(201).json({
+        message: "Success: Account created!",
       });
+    } catch (err) {
+      if (err instanceof UniqueConstraintError) {
+        res.status(409).json({
+          message: "Account with that email already taken.",
+        });
+      } else {
+        res.status(500).json({
+          message: "Registration failed",
+        });
+      }
     }
+  } else {
+    res.status(406).json({
+      message: "Password must be equal to or more than 5 characters.",
+    });
   }
 });
 

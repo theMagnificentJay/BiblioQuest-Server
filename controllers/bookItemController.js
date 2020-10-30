@@ -70,4 +70,50 @@ bookItemController.post("/addBook", async (req, res) => {
   }
 });
 
+/****************************
+ * UPDATE BOOK ITEM (two values available to update, listID and read.)
+ ****************************/
+
+bookItemController.put("/update", (req, res) => {
+  //   let bookID = req.params.id;
+  //todo update to take req.params
+  let { newListTitle, read, bookID } = req.body;
+  let newListID = 0;
+
+  try {
+    console.log("in the try Block");
+    BookListModel.findOne({
+      where: { title: newListTitle },
+    }).then((data) => {
+      newListID = data.id;
+      console.log(newListID);
+    });
+  } catch (err) {
+    res.status(500).json({
+      result: err,
+      message: `No list found. ${err}`,
+    });
+  }
+
+  try {
+    BookItemModel.update(
+      {
+        read: read,
+        listID: newListID,
+      },
+      { returning: true, where: { id: bookID } }
+    ).then(([rowsUpdated, bookReturn]) => {
+      res.status(202).json({
+        bookReturn,
+        message: "Book status updated.",
+      });
+    });
+  } catch (err) {
+    res.status(500).json({
+      result: err,
+      message: `Book failed to be updated. ${err}`,
+    });
+  }
+});
+
 module.exports = bookItemController;
