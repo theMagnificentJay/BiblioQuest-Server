@@ -21,16 +21,22 @@ biblioQuestApp.use(
   controllers.List
 );
 
+biblioQuestApp.use(
+  "/book",
+  require("./middleware/validate-session"),
+  controllers.Book
+);
+
 sequelize
   .authenticate()
   .then(() => {
-    console.log("Database connected");
     sequelize.sync();
+    console.log("Database connected");
   })
   .catch((err) => {
     console.error("Unable to connect", err);
   });
 
-biblioQuestApp.listen(3030, () => {
-  console.log("BiblioQuest is listening on port 3030");
+biblioQuestApp.listen(process.env.PORT, () => {
+  console.log(`BiblioQuest is listening on port ${process.env.PORT}`);
 });

@@ -16,7 +16,7 @@ const validate = (req, res, next) => {
           UserModel.findOne({ where: { id: decoded.id } }).then(
             (user) => {
               req.user = user;
-              console.log(req.user);
+              // console.log(req.user);
               next();
             },
             (err) => {
