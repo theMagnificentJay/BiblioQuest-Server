@@ -10,7 +10,7 @@ const bookListController = Router();
 
 bookListController.post("/newList", async (req, res) => {
   const owner = req.user.id;
-  const title = req.body.title;
+  const { title } = req.body;
   try {
     let newList = BookListModel.create({
       owner: owner,
