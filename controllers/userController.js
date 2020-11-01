@@ -18,9 +18,12 @@ userController.post("/register", async (req, res) => {
       await UserModel.create({
         email: email,
         passwordhash: bcrypt.hashSync(password, 10),
-      });
-      res.status(201).json({
-        message: "Success: Account created!",
+      }).then((data) => {
+        const token = jwt.sign({ id: data.id }, process.env.JWT_SECRET);
+        res.status(201).json({
+          message: "Success: Account created!",
+          token: token,
+        });
       });
     } catch (err) {
       if (err instanceof UniqueConstraintError) {
