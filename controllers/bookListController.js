@@ -126,4 +126,21 @@ bookListController.put("/update/:id", async (req, res) => {
   }
 });
 
+/* *******************
+ * DELETE LIST
+ *********************/
+bookListController.delete("/deletelist/:id", async (req, res) => {
+  try {
+    const removedList = await BookListModel.destroy({
+      where: { id: req.params.id },
+    }).then((data) => {
+      res.status(200).json({ message: "List succesfully deleted!" });
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: `failed to delete list. ${err}`,
+    });
+  }
+});
+
 module.exports = bookListController;
