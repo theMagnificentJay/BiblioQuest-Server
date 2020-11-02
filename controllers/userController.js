@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { UniqueConstraintError } = require("sequelize/lib/errors");
 const validateSession = require("../middleware/validate-session");
-const users = [];
 
 const userController = Router();
 
@@ -73,31 +72,19 @@ userController.post("/login", async (req, res) => {
 /* ******************
  * Delete User Route
  ********************/
-userController.delete("/:id", validateSession, async (req, res, next) => {
+
+userController.delete("/deleteuser", validateSession, async (req, res) => {
   try {
-    const removedUser = await UserModel.remove({ id: req.params.id });
-    res.json(removedUser);
+    const removedUser = await UserModel.destroy({
+      where: { id: req.user.id },
+    }).then((data) => {
+      res.status(200).json({ message: "User succesfully deleted!" });
+    });
   } catch (err) {
     res.status(500).json({
-      message: "failed to delete user.",
+      message: `failed to delete user. ${err}`,
     });
   }
 });
 
-// userController.delete("/deleteuser/:id", validateSession, async (req, res, next) => {
-// const {id} = req.params.id;
-// // // const deletedUser =  users.find(user => user.id === id);
-// // const deletedUser =  ;
-// UserModel.findOneAndRemove()
-
-//   } else {
-//     res.status(401).json({
-//       message: "Delete User Failed",
-//     });
-//   }
-// } catch (err) {
-//   res.status(500).json({
-//     message: `Error Deleting User: ${err}`,
-//   });
-// }
 module.exports = userController;
