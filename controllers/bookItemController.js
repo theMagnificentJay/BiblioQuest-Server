@@ -31,6 +31,7 @@ bookItemController.post("/addBook", async (req, res) => {
       //find the list to be associated with book
       where: {
         title: listTitle,
+        owner: owner,
       },
     });
     if (bookList === null) {
@@ -74,45 +75,99 @@ bookItemController.post("/addBook", async (req, res) => {
  * UPDATE BOOK ITEM (two values available to update, listID and read.)
  ****************************/
 
-bookItemController.put("/update", (req, res) => {
-  //   let bookID = req.params.id;
-  //todo update to take req.params
-  let { newListTitle, read, bookID } = req.body;
-  let newListID = 0;
-
+bookItemController.route("/update/:id").put(async (req, res) => {
+  const listOwner = req.user.id;
+  const bookID = req.params.id;
+  const { newListTitle, read } = req.body;
   try {
-    console.log("in the try Block");
-    BookListModel.findOne({
-      where: { title: newListTitle },
-    }).then((data) => {
-      newListID = data.id;
-      console.log(newListID);
-    });
+    if (newListTitle) {
+      await BookListModel.findOne({
+        where: { title: newListTitle, owner: listOwner },
+      }).then((data) => {
+        BookItemModel.update(
+          { listID: data.id, read: read },
+          { returning: true, where: { id: bookID } }
+        )
+          .then(([rowsUpdate, [updatedBook]]) => {
+            res.status(200).json({
+              updatedBook,
+              message: "Book list updated",
+            });
+          })
+          .catch((err) => {
+            res.status(500).json({ message: `Update failed ${err}` });
+          });
+      });
+    } else {
+      BookItemModel.update(
+        { read },
+        { returning: true, where: { id: bookID } }
+      ).then(([rowsUpdate, [updatedBook]]) => {
+        res
+          .status(200)
+          .json({
+            updatedBook,
+            message: "read status updated",
+          })
+          .catch((err) => {
+            res.status(500).json({ message: `Update failed: ${err}` });
+          });
+      });
+    }
   } catch (err) {
     res.status(500).json({
       result: err,
-      message: `No list found. ${err}`,
+      message: `Book failed to be updated. New list or book unfound. ${err}`,
     });
   }
+});
 
+/******************************
+ * GET SINGLE BOOK
+ ******************************/
+bookItemController.get("/singleBook/:id", async (req, res) => {
+  const bookID = req.params.id;
+  const ownerID = req.user.id;
   try {
-    BookItemModel.update(
-      {
-        read: read,
-        listID: newListID,
-      },
-      { returning: true, where: { id: bookID } }
-    ).then(([rowsUpdated, bookReturn]) => {
-      res.status(202).json({
-        bookReturn,
-        message: "Book status updated.",
-      });
+    BookItemModel.findOne({ where: { id: bookID, ownerID: ownerID } }).then(
+      (data) => {
+        if (data !== null) {
+          res.status(200).json({
+            data,
+          });
+        } else {
+          res.status(404).json({
+            message: "No book found",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    res.status(500).json({ err, message: "Server Error" });
+  }
+});
+
+/******************************
+ * GET ALL BOOKS FOR LIST
+ ******************************/
+
+bookItemController.get("/listBooks/:id", async (req, res) => {
+  //! The id is for a list, not a book!
+  const listID = req.params.id;
+  try {
+    BookItemModel.findAll({ where: { listID: listID } }).then((data) => {
+      if (data !== null) {
+        res.status(200).json({
+          data,
+        });
+      } else {
+        res.status(404).json({
+          message: "Not list found",
+        });
+      }
     });
   } catch (err) {
-    res.status(500).json({
-      result: err,
-      message: `Book failed to be updated. ${err}`,
-    });
+    res.status(500).json({ err, message: "Server Error" });
   }
 });
 
