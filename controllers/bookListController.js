@@ -48,11 +48,10 @@ bookListController.get("/allLists", async (req, res) => {
   try {
     let allLists = await BookListModel.findAll({
       where: { owner: bookListOwner },
-    }).then((allLists) => {
-      //todo the "allLists" in this line is the promise returned from the findAll, which is good, but it's confusing to give it the same name as the "allLists" on line 40,   which is the function expression variable and would hold the return for the whole list. Notice how it doesn't highlight when you click on the other allListts. I'd change one or the other name, perhaps title the promise return "data" or "json"?
+    }).then((data) => {
       // if list(s) returned, display the list(s); else display message
-      if (allLists.length > 0) {
-        res.status(200).json(allLists);
+      if (data.length > 0) {
+        res.status(200).json(data);
       } else {
         res.status(404).json({ message: "No lists found." });
       }
@@ -60,7 +59,7 @@ bookListController.get("/allLists", async (req, res) => {
   } catch (err) {
     {
       res.status(500).json({
-        message: "Failed to retrieve lists",
+        message: `Failed to retrieve lists ${err}`,
       });
     }
   }
@@ -77,10 +76,10 @@ bookListController.get("/singleList/:id", async (req, res) => {
   try {
     let singleList = await BookListModel.findOne({
       where: { id: listID, owner: listOwner },
-    }).then((singleList) => {
+    }).then((data) => {
       // if list returned, display the list; else display message
-      if (singleList !== null) {
-        res.status(200).json(singleList);
+      if (data !== null) {
+        res.status(200).json(data);
       } else {
         res.status(404).json({ message: "List not found." });
       }
@@ -88,7 +87,7 @@ bookListController.get("/singleList/:id", async (req, res) => {
   } catch (err) {
     {
       res.status(500).json({
-        message: "Failed to retrieve list.",
+        message: `Failed to retrieve lists ${err}`,
       });
     }
   }
@@ -121,7 +120,7 @@ bookListController.put("/update/:id", async (req, res) => {
     }
   } catch {
     function updateError(err) {
-      res.send(500, err.message);
+      res.status(500).json( `Failed to retrieve lists ${err}`);
     }
   }
 });
