@@ -134,7 +134,7 @@ bookListController.delete("/deletelist/:id", async (req, res) => {
     const removedList = await BookListModel.destroy({
       where: { id: req.params.id },
     }).then((data) => {
-      res.status(200).json({ message: "List succesfully deleted!" });
+      res.status(200).json({ message: "List successfully deleted!" });
     });
   } catch (err) {
     res.status(500).json({
