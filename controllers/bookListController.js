@@ -17,7 +17,7 @@ bookListController.post("/newList", async (req, res) => {
     });
     if (listCheck !== null) {
       res.status(400).json({
-        message: "List aleady exists.",
+        message: "Bookshelf aleady exists. Try a different name.",
       });
     } else {
       let newList = BookListModel.create({
