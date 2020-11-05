@@ -20,7 +20,7 @@ const BookItemModel = sequelize.define("book", {
   },
   author: {
     type: DataTypes.ARRAY(Sequelize.TEXT),
-    allowNull: false,
+    allowNull: true,
   },
   read: {
     type: DataTypes.BOOLEAN,
