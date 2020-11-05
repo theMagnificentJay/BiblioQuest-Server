@@ -59,7 +59,7 @@ bookListController.get("/allLists", async (req, res) => {
   } catch (err) {
     {
       res.status(500).json({
-        message: `Failed to retrieve lists ${err}`,
+        message: `Failed to retrieve lists.`,
       });
     }
   }
@@ -120,7 +120,7 @@ bookListController.put("/update/:id", async (req, res) => {
     }
   } catch {
     function updateError(err) {
-      res.status(500).json( `Failed to retrieve lists ${err}`);
+      res.status(500).json(`Failed to retrieve lists ${err}`);
     }
   }
 });
