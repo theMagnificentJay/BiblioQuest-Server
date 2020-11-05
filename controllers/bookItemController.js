@@ -66,7 +66,7 @@ bookItemController.post("/addBook", async (req, res) => {
   } catch (err) {
     res.status(500).json({
       result: err,
-      message: `Book failed to be added to list. ${err}`,
+      message: `Book failed to be added to list.`,
     });
   }
 });
